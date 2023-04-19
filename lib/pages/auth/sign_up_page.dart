@@ -4,7 +4,7 @@ import 'dart:async';
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../services/supabase/supabase_auth_service.dart';
@@ -12,9 +12,12 @@ import '../../services/supabase/supabase_auth_service.dart';
 import '../../services/supabase/supabase_client_service.dart';
 import '../../utils/box_decorations.dart';
 import '../../utils/custom_password_textfield.dart';
+import '../../utils/types.dart';
 import '../../utils/validators.dart';
 import '../../widgets/custom_snackbar.dart';
 import '../../widgets/custom_textfield.dart';
+import '../../widgets/social_media_button.dart';
+import '../../widgets/social_media_layout.dart';
 import '../../widgets/wave_header.dart';
 import 'sign_in_page.dart';
 
@@ -92,7 +95,9 @@ class _SignUpPageState extends State<SignUpPage> {
           SingleChildScrollView(
             child: Column(
               children: [
-                const WaveHeader(),
+                const WaveHeader(
+                  height: 150,
+                ),
                 SafeArea(
                   child: Container(
                     padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
@@ -241,81 +246,32 @@ class _SignUpPageState extends State<SignUpPage> {
                                 ],
                               ),
                               const SizedBox(height: 30.0),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
+                              SocialMediaLayout(
+                                layoutOrientation: Axis.horizontal,
+                                padding: 4.0, // set as row or column
                                 children: [
-                                  Container(
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.black.withOpacity(0.4),
-                                          blurRadius: 8,
-                                          offset: const Offset(0, 2),
-                                        ),
-                                      ],
-                                    ),
-                                    child: CircleAvatar(
-                                      backgroundColor: const Color(0xFFEA4335),
-                                      // add other button styles,
-                                      child: IconButton(
-                                        icon: const FaIcon(
-                                          FontAwesomeIcons.google,
-                                        ),
-                                        onPressed: () {
-                                          // add your code for the Google button here
-                                        },
-                                      ),
-                                    ),
+                                  SocialMediaButton(
+                                    icon: Icons.facebook,
+                                    backgroundColor: Colors.blue,
+                                    onPressed: () {},
+                                    buttonType: ButtonType.outlinedButton,
                                   ),
-                                  Container(
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.black.withOpacity(0.4),
-                                          blurRadius: 8,
-                                          offset: const Offset(0, 2),
-                                        ),
-                                      ],
-                                    ),
-                                    child: CircleAvatar(
-                                      backgroundColor: Colors.black,
-                                      child: IconButton(
-                                        icon:
-                                            const Icon(FontAwesomeIcons.github),
-                                        onPressed: () {
-                                          // add your code for the GitHub button here
-                                        },
-                                      ),
-                                    ),
+                                  SocialMediaButton(
+                                    icon: Icons.facebook,
+                                    backgroundColor: Colors.blue,
+                                    onPressed: () {},
+                                    buttonType: ButtonType.outlinedButton,
                                   ),
-                                  Container(
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.black.withOpacity(0.4),
-                                          blurRadius: 8,
-                                          offset: const Offset(0, 2),
-                                        ),
-                                      ],
-                                    ),
-                                    child: CircleAvatar(
-                                      backgroundColor: const Color(0xFF1877F2),
-                                      child: IconButton(
-                                        icon: const Icon(
-                                            FontAwesomeIcons.facebook),
-                                        onPressed: () {
-                                          // add your code for the Facebook button here
-                                        },
-                                      ),
-                                    ),
+                                  SocialMediaButton(
+                                    icon: Icons.facebook,
+                                    backgroundColor: Colors.blue,
+                                    onPressed: () {},
+                                    buttonType: ButtonType.outlinedButton,
                                   ),
+                                  // add more SocialMediaButton widgets here for additional providers
                                 ],
                               ),
-                              const SizedBox(height: 20.0),
+                              const SizedBox(height: 30.0),
                               Container(
                                 margin:
                                     const EdgeInsets.fromLTRB(10, 20, 10, 20),

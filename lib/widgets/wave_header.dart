@@ -3,47 +3,40 @@ import 'package:wave/config.dart';
 import 'package:wave/wave.dart';
 
 class WaveHeader extends StatelessWidget {
-  const WaveHeader({super.key});
+  final double height;
 
-  Widget _buildCard({
-    required Color backgroundColor,
-    required CustomConfig config,
-  }) {
-    return Card(
-      elevation: 0,
-      margin: const EdgeInsets.all(0),
-      clipBehavior: Clip.antiAlias,
-      color: backgroundColor,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.zero,
-      ),
-      child: WaveWidget(
-        config: config,
-        backgroundColor: Colors.transparent,
-        size: const Size(double.infinity, double.infinity),
-        waveAmplitude: 0,
-      ),
-    );
-  }
+  const WaveHeader({
+    Key? key,
+    required this.height,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     // ignore: sized_box_for_whitespace
     return Container(
-      height: 200,
-      child: _buildCard(
-        backgroundColor: Colors.purpleAccent,
-        config: CustomConfig(
-          gradients: [
-            [Colors.red, const Color(0xEEF44336)],
-            [Colors.red[800]!, const Color(0x77E57373)],
-            [Colors.orange, const Color(0x66FF9800)],
-            [Colors.yellow, const Color(0x55FFEB3B)],
+      height: height,
+      child: Transform.rotate(
+        angle: 3.14, // rotate by 180 degrees (pi radians)
+        child: Stack(
+          children: [
+            WaveWidget(
+              config: CustomConfig(
+                gradients: [
+                  [Colors.blue[800]!, const Color(0x7744A4D3)],
+                  [Colors.blue, const Color(0x6656A5DC)],
+                  [Colors.blueAccent, const Color(0x5587CEEB)],
+                  [Colors.lightBlue, const Color(0x44B0E0E6)],
+                ],
+                durations: [32000, 21000, 18000, 5000],
+                heightPercentages: [0.25, 0.26, 0.28, 0.31],
+                gradientBegin: Alignment.centerLeft,
+                gradientEnd: Alignment.centerRight,
+              ),
+              backgroundColor: Colors.transparent,
+              size: const Size(double.infinity, double.infinity),
+              waveAmplitude: 0,
+            ),
           ],
-          durations: [35000, 19440, 10800, 6000],
-          heightPercentages: [0.20, 0.23, 0.25, 0.30],
-          gradientBegin: Alignment.bottomLeft,
-          gradientEnd: Alignment.topRight,
         ),
       ),
     );

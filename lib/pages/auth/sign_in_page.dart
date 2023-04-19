@@ -61,7 +61,9 @@ class _SignInPageState extends State<SignInPage> {
         body: SingleChildScrollView(
           child: Column(
             children: [
-              const WaveHeader(),
+              const WaveHeader(
+                height: 150,
+              ),
               SafeArea(
                 child: Container(
                   padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
