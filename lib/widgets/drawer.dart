@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../utils/constants.dart';
 import 'drawer_items.dart';
 
 class DrawerWidget extends StatelessWidget {
@@ -16,13 +15,13 @@ class DrawerWidget extends StatelessWidget {
     return Drawer(
       child: Column(
         children: [
-          UserAccountsDrawerHeader(
-            accountName: const Text("Don Puerto"),
-            accountEmail: Text("$userEmail"),
-            currentAccountPicture: const CircleAvatar(
+          const UserAccountsDrawerHeader(
+            accountName: Text("Don Puerto"),
+            accountEmail: Text("don.puerto.1003@gmail.com"),
+            currentAccountPicture: CircleAvatar(
               backgroundImage: AssetImage("assets/images/DPLogo.png"),
             ),
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               color: Colors.blue,
             ),
             margin: EdgeInsets.zero,
@@ -46,7 +45,7 @@ class DrawerWidget extends StatelessWidget {
           const Divider(),
           ListTile(
             leading: const Icon(Icons.logout),
-            title: Text('Current User ID: $userId'),
+            title: const Text('Current User ID'),
             onTap: () {
               // Add your logout logic here
             },

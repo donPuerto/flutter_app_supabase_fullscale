@@ -36,7 +36,7 @@ class _SplashPageState extends State<SplashPage> {
             ),
           ],
         ),
-        nextScreen: const RegisterPage(),
+        nextScreen: const SignUpPage(),
         splashTransition: SplashTransition.fadeTransition,
         pageTransitionType: PageTransitionType.fade,
       ),

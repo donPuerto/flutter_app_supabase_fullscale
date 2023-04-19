@@ -7,69 +7,35 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app_supabase_fullscale/widgets/wave_header.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import '../../utils/constants.dart';
+import '../../services/supabase/supabase_client_service.dart';
 import '../common/theme_helper.dart';
 
 import 'forgot_password_page.dart';
 import 'sign_up_page.dart';
 //import 'package:sizer/sizer.dart';
 
-class SigninPage extends StatefulWidget {
-  static String routeName = '/signin';
-  const SigninPage({Key? key}) : super(key: key);
+class SignInPage extends StatefulWidget {
+  static String routeName = '/sign_in';
+  const SignInPage({Key? key}) : super(key: key);
 
   @override
-  State<SigninPage> createState() => _SigninPageState();
+  State<SignInPage> createState() => _SignInPageState();
 }
 
-class _SigninPageState extends State<SigninPage> {
+class _SignInPageState extends State<SignInPage> {
   final _form = GlobalKey<FormState>();
-  bool _isLoading = false;
+  final bool _isLoading = false;
   bool _redirecting = false;
   late final _emailController = TextEditingController();
   late final _passwordController = TextEditingController();
   late final StreamSubscription<AuthState> _authStateSubscription;
 
-  Future<void> _signIn() async {
-    print('Signin');
-    setState(() {
-      _isLoading = true;
-    });
-
-    try {
-      final AuthResponse res = await supabase.auth.signInWithPassword(
-          email: _emailController.text, password: _passwordController.text);
-
-      if (mounted) {
-        context.showSnackBar(message: 'Check your email for login link!');
-        _passwordController.clear();
-        _emailController.clear();
-      }
-    } on AuthException catch (error) {
-      context.showSnackBar(
-        message: error.message,
-        snackBarType: SnackBarType.error,
-        duration: const Duration(seconds: 3),
-      );
-    } catch (error) {
-      context.showSnackBar(
-        message: 'Unexpected error occurred',
-        snackBarType: SnackBarType.error,
-        duration: const Duration(seconds: 3),
-      );
-    }
-
-    // final isValid =
-    //     _form.currentState == null ? false : _form.currentState!.validate();
-
-    setState(() {
-      _isLoading = true;
-    });
-  }
+  Future<void> _signIn() async {}
 
   @override
   void initState() {
-    _authStateSubscription = supabase.auth.onAuthStateChange.listen((data) {
+    _authStateSubscription =
+        supabaseClient.auth.onAuthStateChange.listen((data) {
       if (_redirecting) return;
       final session = data.session;
       if (session != null) {
@@ -95,7 +61,7 @@ class _SigninPageState extends State<SigninPage> {
         body: SingleChildScrollView(
           child: Column(
             children: [
-              const WaveHeader(height: 250),
+              const WaveHeader(),
               SafeArea(
                 child: Container(
                   padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),

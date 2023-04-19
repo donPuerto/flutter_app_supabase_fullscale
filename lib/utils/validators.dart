@@ -30,3 +30,20 @@ String? validateConfirmPassword(String? value, String password) {
   }
   return null;
 }
+
+bool isValidEmail(String email) {
+  // A regular expression for validating an email address
+  final RegExp emailRegExp = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+
+  return emailRegExp.hasMatch(email);
+}
+
+String? emailError(String? value) {
+  if (value == null || value.isEmpty) {
+    return 'Please enter an email address';
+  }
+  if (!isValidEmail(value)) {
+    return 'Please enter a valid email address';
+  }
+  return null;
+}

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
+
 // import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 const appName = 'Flutter Supabase App';
@@ -7,31 +7,24 @@ const footerText = 'Developed by Don Puerto';
 const footerTextTwo = 'Inspired by myself';
 const supportEmail = 'don.puerto.1003@gmail.com';
 
+//print("Supabase Constant");
 // Supabase
-final supabase = Supabase.instance.client;
-// Supabase User
-final User? user = supabase.auth.currentUser;
-
-// Supabase User id
-final userId = supabase.auth.currentUser?.id;
-// Supabase User Email
-final userEmail = supabase.auth.currentUser?.email;
 
 final navigatorKey = GlobalKey<NavigatorState>();
 
 const supabaseImageBucket = 'public-images';
 
-bool isAuthenticated() {
-  return supabase.auth.currentUser != null;
-}
+// bool isAuthenticated() {
+//   return supabase.auth.currentUser != null;
+// }
 
-bool isUnauthenticated() {
-  return isAuthenticated() == false;
-}
+// bool isUnauthenticated() {
+//   return isAuthenticated() == false;
+// }
 
-String getCurrentUserId() {
-  return isAuthenticated() ? supabase.auth.currentUser!.id : '';
-}
+// String getCurrentUserId() {
+//   return isAuthenticated() ? supabase.auth.currentUser!.id : '';
+// }
 
 Color? appBackgroundColor = Colors.grey.shade50;
 Color? appForegroundColor = Colors.indigo;
@@ -71,44 +64,44 @@ Color? appForegroundColor = Colors.indigo;
 //   },
 // );
 
-enum SnackBarType { success, info, error }
+// enum SnackBarType { success, info, error }
 
-extension ShowSnackBar on BuildContext {
-  void showSnackBar({
-    required String message,
-    Color? backgroundColor,
-    SnackBarType? snackBarType,
-    Duration duration = const Duration(seconds: 3),
-    void Function()? onOk,
-    void Function()? onCancel,
-  }) {
-    Color? snackBarColor;
-    if (snackBarType != null) {
-      switch (snackBarType) {
-        case SnackBarType.success:
-          snackBarColor = Colors.green;
-          break;
-        case SnackBarType.info:
-          snackBarColor = Colors.blue;
-          break;
-        case SnackBarType.error:
-          snackBarColor = Colors.red;
-          break;
-      }
-    }
+// extension ShowSnackBar on BuildContext {
+//   void showSnackBar({
+//     required String message,
+//     Color? backgroundColor,
+//     SnackBarType? snackBarType,
+//     Duration duration = const Duration(seconds: 3),
+//     void Function()? onOk,
+//     void Function()? onCancel,
+//   }) {
+//     Color? snackBarColor;
+//     if (snackBarType != null) {
+//       switch (snackBarType) {
+//         case SnackBarType.success:
+//           snackBarColor = Colors.green;
+//           break;
+//         case SnackBarType.info:
+//           snackBarColor = Colors.blue;
+//           break;
+//         case SnackBarType.error:
+//           snackBarColor = Colors.red;
+//           break;
+//       }
+//     }
 
-    ScaffoldMessenger.of(this).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: backgroundColor ?? snackBarColor ?? Colors.white,
-        duration: duration,
-        action: onOk != null || onCancel != null
-            ? SnackBarAction(
-                label: "OK",
-                onPressed: onOk ?? () {},
-              )
-            : null,
-      ),
-    );
-  }
-}
+//     ScaffoldMessenger.of(this).showSnackBar(
+//       SnackBar(
+//         content: Text(message),
+//         backgroundColor: backgroundColor ?? snackBarColor ?? Colors.white,
+//         duration: duration,
+//         action: onOk != null || onCancel != null
+//             ? SnackBarAction(
+//                 label: "OK",
+//                 onPressed: onOk ?? () {},
+//               )
+//             : null,
+//       ),
+//     );
+//   }
+// }

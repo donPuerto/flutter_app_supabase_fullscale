@@ -55,10 +55,10 @@ class _Sun extends StatelessWidget {
         shape: BoxShape.circle,
         boxShadow: [
           BoxShadow(
-            color: Color(0xFFFFC107).withOpacity(0.5),
+            color: const Color(0xFFFFC107).withOpacity(0.5),
             spreadRadius: 10,
             blurRadius: 20,
-            offset: Offset(0, 0),
+            offset: const Offset(0, 0),
           ),
         ],
       ),
