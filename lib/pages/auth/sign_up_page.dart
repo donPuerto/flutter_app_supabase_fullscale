@@ -2,7 +2,6 @@
 
 import 'dart:async';
 
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -12,12 +11,13 @@ import '../../services/supabase/supabase_auth_service.dart';
 import '../../services/supabase/supabase_client_service.dart';
 import '../../utils/box_decorations.dart';
 import '../../utils/custom_password_textfield.dart';
-import '../../utils/types.dart';
+
 import '../../utils/validators.dart';
+
 import '../../widgets/custom_snackbar.dart';
 import '../../widgets/custom_textfield.dart';
+
 import '../../widgets/social_media_button.dart';
-import '../../widgets/social_media_layout.dart';
 import '../../widgets/wave_header.dart';
 import 'sign_in_page.dart';
 
@@ -246,59 +246,65 @@ class _SignUpPageState extends State<SignUpPage> {
                                 ],
                               ),
                               const SizedBox(height: 30.0),
-                              SocialMediaLayout(
-                                layoutOrientation: Axis.horizontal,
-                                padding: 4.0, // set as row or column
+                              Column(
                                 children: [
                                   SocialMediaButton(
-                                    icon: Icons.facebook,
-                                    backgroundColor: Colors.blue,
-                                    onPressed: () {},
-                                    buttonType: ButtonType.outlinedButton,
+                                    buttonType:
+                                        SocialLoginButtonType.googleLogin,
+                                    text: 'Sign in with Google',
+                                    onPressed: () {
+                                      // Do something when the user presses the button
+                                    },
                                   ),
+                                  const SizedBox(height: 16),
                                   SocialMediaButton(
-                                    icon: Icons.facebook,
-                                    backgroundColor: Colors.blue,
-                                    onPressed: () {},
-                                    buttonType: ButtonType.outlinedButton,
+                                    buttonType:
+                                        SocialLoginButtonType.facebookLogin,
+                                    text: 'Sign in with Facebook',
+                                    onPressed: () {
+                                      // Do something when the user presses the button
+                                    },
                                   ),
+                                  const SizedBox(height: 16),
                                   SocialMediaButton(
-                                    icon: Icons.facebook,
-                                    backgroundColor: Colors.blue,
-                                    onPressed: () {},
-                                    buttonType: ButtonType.outlinedButton,
+                                    buttonType:
+                                        SocialLoginButtonType.githubLogin,
+                                    text: 'Sign in with Github',
+                                    onPressed: () {
+                                      // Do something when the user presses the button
+                                    },
                                   ),
-                                  // add more SocialMediaButton widgets here for additional providers
                                 ],
                               ),
+
                               const SizedBox(height: 30.0),
-                              Container(
-                                margin:
-                                    const EdgeInsets.fromLTRB(10, 20, 10, 20),
-                                //child: Text('Don\'t have an account? Create'),
-                                child: Text.rich(
-                                  TextSpan(
-                                    children: [
-                                      const TextSpan(
-                                          text: "Already have an account? "),
-                                      TextSpan(
-                                        text: 'Sign in',
-                                        recognizer: TapGestureRecognizer()
-                                          ..onTap = () {
-                                            navigatorKey.currentState!
-                                                .pushNamed(
-                                                    SignInPage.routeName);
-                                          },
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .secondary),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
+                              //     Container(
+                              //       margin:
+                              //           const EdgeInsets.fromLTRB(10, 20, 10, 20),
+                              //       //child: Text('Don\'t have an account? Create'),
+                              //       child: Text.rich(
+                              //         TextSpan(
+                              //           children: [
+                              //             const TextSpan(
+                              //                 text: "Already have an account? "),
+                              //             TextSpan(
+                              //               text: 'Sign in',
+                              //               recognizer: TapGestureRecognizer()
+                              //                 ..onTap = () {
+                              //                   navigatorKey.currentState!
+                              //                       .pushNamed(
+                              //                           SignInPage.routeName);
+                              //                 },
+                              //               style: TextStyle(
+                              //                   fontWeight: FontWeight.bold,
+                              //                   color: Theme.of(context)
+                              //                       .colorScheme
+                              //                       .secondary),
+                              //             ),
+                              //           ],
+                              //         ),
+                              //       ),
+                              //     ),
                             ],
                           ),
                         ),

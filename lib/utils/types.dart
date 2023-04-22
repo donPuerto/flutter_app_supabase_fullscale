@@ -4,4 +4,5 @@ enum ButtonType {
   textButton,
   iconButton,
   floatingActionButton,
+  materialButton,
 }
