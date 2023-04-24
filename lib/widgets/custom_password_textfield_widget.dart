@@ -1,14 +1,16 @@
+
 import 'package:flutter/material.dart';
 
-class CustomPasswordTextField extends StatelessWidget {
+class CustomPasswordTextFieldWidget extends StatelessWidget {
   final TextEditingController controller;
   final String labelText;
   final String hintText;
   final String? Function(String?)? validator;
   final AutovalidateMode autovalidateMode;
   final bool obscureText;
+  final VoidCallback togglePasswordVisibility;
 
-  const CustomPasswordTextField({
+  const CustomPasswordTextFieldWidget({
     Key? key,
     required this.controller,
     required this.labelText,
@@ -16,6 +18,7 @@ class CustomPasswordTextField extends StatelessWidget {
     required this.validator,
     required this.autovalidateMode,
     this.obscureText = false,
+    required this.togglePasswordVisibility,
   }) : super(key: key);
 
   @override
@@ -74,6 +77,15 @@ class CustomPasswordTextField extends StatelessWidget {
           focusedErrorBorder: OutlineInputBorder(
             borderSide: const BorderSide(color: Colors.red),
             borderRadius: BorderRadius.circular(8.0),
+          ),
+          suffixIcon: InkWell(
+            onTap: () {
+              togglePasswordVisibility(); // call the callback function
+            },
+            child: Icon(
+              obscureText ? Icons.visibility : Icons.visibility_off,
+              color: Colors.grey,
+            ),
           ),
         ),
         validator: validator,

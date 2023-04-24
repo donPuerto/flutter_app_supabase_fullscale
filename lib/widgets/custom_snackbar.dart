@@ -1,58 +1,49 @@
 // ignore_for_file: constant_identifier_names
 
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-class CustomSnackbar extends StatefulWidget {
-  final String message;
-  final SnackBarType type;
-
-  const CustomSnackbar({
+class CustomSnackbar extends SnackBar {
+  CustomSnackbar({
     Key? key,
-    required this.message,
-    required this.type,
-  }) : super(key: key);
+    required String message,
+    SnackBarType type = SnackBarType.Information,
+    Duration duration = const Duration(seconds: 3),
+  }) : super(
+          key: key,
+          duration: duration,
+          backgroundColor: _getBackgroundColor(type),
+          content: Row(
+            children: [
+              Icon(_getIconData(type)),
+              const SizedBox(width: 8),
+              Text(message),
+            ],
+          ),
+        );
 
-  @override
-  State<CustomSnackbar> createState() => _CustomSnackbarState();
-}
-
-class _CustomSnackbarState extends State<CustomSnackbar> {
-  @override
-  Widget build(BuildContext context) {
-    Color backgroundColor;
-    IconData iconData;
-
-    switch (widget.type) {
+  static Color _getBackgroundColor(SnackBarType type) {
+    switch (type) {
       case SnackBarType.Error:
-        backgroundColor = Colors.red;
-        iconData = Icons.error;
-        break;
+        return Colors.red;
       case SnackBarType.Success:
-        backgroundColor = Colors.green;
-        iconData = Icons.check_circle_outline;
-        break;
+        return Colors.green;
       case SnackBarType.Information:
-        backgroundColor = Colors.blue;
-        iconData = Icons.info_outline;
-        break;
       default:
-        backgroundColor = Colors.grey;
-        iconData = Icons.info_outline;
+        return Colors.blue;
     }
+  }
 
-    return ScaffoldMessenger(
-      child: SnackBar(
-        content: Row(
-          children: [
-            Icon(iconData),
-            const SizedBox(width: 8),
-            Text(widget.message),
-          ],
-        ),
-        backgroundColor: backgroundColor,
-        duration: const Duration(seconds: 3),
-      ),
-    );
+  static IconData _getIconData(SnackBarType type) {
+    switch (type) {
+      case SnackBarType.Error:
+        return FontAwesomeIcons.circleExclamation;
+      case SnackBarType.Success:
+        return FontAwesomeIcons.circleCheck;
+      case SnackBarType.Information:
+      default:
+        return FontAwesomeIcons.circleInfo;
+    }
   }
 }
 

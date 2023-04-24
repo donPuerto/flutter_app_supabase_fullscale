@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-enum SocialLoginButtonType {
-  googleLogin,
-  facebookLogin,
-  twitterLogin,
-  generalLogin,
-  githubLogin,
-}
+import '../utils/types.dart';
+
+/*
+How to call SocialMediaButton class?
+SocialMediaButton(
+  buttonType: SocialLoginButtonType.googleLogin,
+  onPressed: () {
+    // perform action when button is pressed
+  },
+);
+
+*/
 
 class SocialMediaButton extends StatelessWidget {
   final IconData? icon;
@@ -41,147 +46,152 @@ class SocialMediaButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final defaultButtonStyle = ElevatedButton.styleFrom(
-      backgroundColor: backgroundColor,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(borderRadius ?? 8.0),
-      ),
-    );
-
     switch (buttonType) {
       case SocialLoginButtonType.googleLogin:
-        return ElevatedButton.icon(
-          onPressed: onPressed,
-          icon: const FaIcon(
-            FontAwesomeIcons.google,
-            color: Colors.white,
-          ),
-          label: Text(
-            text ?? '',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: fontSize ?? 14.0,
-            ),
-          ),
-          style: defaultButtonStyle.copyWith(
-            backgroundColor: MaterialStateProperty.all<Color>(
-              const Color(0xFFEA4335),
-            ),
-            minimumSize: MaterialStateProperty.resolveWith(
-                (states) => Size(double.infinity, height ?? 50)),
-          ),
-        );
-      case SocialLoginButtonType.facebookLogin:
-        return ElevatedButton.icon(
-          onPressed: onPressed,
-          icon: const FaIcon(
-            FontAwesomeIcons.facebook,
-            color: Colors.white,
-          ),
-          label: Text(
-            text ?? '',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: fontSize ?? 14.0,
-            ),
-          ),
-          style: defaultButtonStyle.copyWith(
-            backgroundColor: MaterialStateProperty.all<Color>(
-              const Color(0xFF1877F2),
-            ),
-            minimumSize: MaterialStateProperty.resolveWith(
-                (states) => Size(double.infinity, height ?? 50)),
-          ),
-        );
-      case SocialLoginButtonType.twitterLogin:
-        return ElevatedButton.icon(
-          onPressed: onPressed,
-          icon: const FaIcon(
-            FontAwesomeIcons.twitter,
-            color: Colors.white,
-          ),
-          label: Text(
-            text ?? '',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: fontSize ?? 14.0,
-            ),
-          ),
-          style: defaultButtonStyle.copyWith(
-            backgroundColor: MaterialStateProperty.all<Color>(
-              const Color(0xFFEA4335),
-            ),
-            minimumSize: MaterialStateProperty.resolveWith(
-                (states) => Size(width ?? 250, height ?? 50)),
-          ),
-        );
-      case SocialLoginButtonType.generalLogin:
-        return ElevatedButton(
-          onPressed: onPressed,
-          style: ElevatedButton.styleFrom(
-            backgroundColor: backgroundColor ?? Colors.amber,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(borderRadius ?? 20),
-            ),
-            padding:
-                const EdgeInsets.symmetric(vertical: 10.0, horizontal: 15.0),
-            elevation: 0.0,
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              if (icon != null)
-                Padding(
-                  padding: const EdgeInsets.only(right: 8.0),
-                  child: FaIcon(
-                    icon,
-                    color: Colors.white,
-                    size: imageWidth ?? 16.0,
-                  ),
-                ),
-              if (imageURL != null || imagepath != null)
-                Padding(
-                  padding: const EdgeInsets.only(right: 8.0),
-                  child: CircleAvatar(
-                    backgroundImage: imageURL != null
-                        ? NetworkImage(imageURL!)
-                        : AssetImage(imagepath!) as ImageProvider<Object>,
-                  ),
-                ),
-              Text(
-                text ?? '',
-                style: TextStyle(
-                  fontSize: fontSize ?? 25.0,
-                  color: Colors.white,
-                ),
+        return Container(
+          width: width ?? 42.0,
+          height: height ?? 42.0,
+          decoration: BoxDecoration(
+            color: backgroundColor ?? Colors.red,
+            shape: BoxShape.circle,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.5),
+                blurRadius: 4.0,
+                spreadRadius: 2.0,
+                offset: const Offset(0, 1),
               ),
             ],
           ),
+          child: Material(
+            color: Colors.transparent,
+            elevation: 1.0,
+            shape: const CircleBorder(),
+            clipBehavior: Clip.hardEdge,
+            child: IconButton(
+              onPressed: onPressed,
+              tooltip: 'Sign in with Google',
+              icon: const FaIcon(
+                FontAwesomeIcons.google,
+                color: Colors.white,
+                size: 24.0,
+              ),
+              splashColor: Colors.blueAccent,
+              highlightColor: Colors.transparent,
+              iconSize: 24.0,
+            ),
+          ),
         );
+
+      case SocialLoginButtonType.facebookLogin:
+        return Container(
+          width: width ?? 42.0,
+          height: height ?? 42.0,
+          decoration: BoxDecoration(
+            color: backgroundColor ?? Colors.blue,
+            shape: BoxShape.circle,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.5),
+                blurRadius: 4.0,
+                spreadRadius: 2.0,
+                offset: const Offset(0, 1),
+              ),
+            ],
+          ),
+          child: Material(
+            color: Colors.transparent,
+            elevation: 1.0,
+            shape: const CircleBorder(),
+            clipBehavior: Clip.hardEdge,
+            child: IconButton(
+              onPressed: onPressed,
+              tooltip: 'Sign in with Facebook',
+              icon: const FaIcon(
+                FontAwesomeIcons.facebookF,
+                color: Colors.white,
+                size: 24.0,
+              ),
+              splashColor: Colors.blueAccent,
+              highlightColor: Colors.transparent,
+              iconSize: 24.0,
+            ),
+          ),
+        );
+
+      case SocialLoginButtonType.twitterLogin:
+        return Container(
+          width: width ?? 42.0,
+          height: height ?? 42.0,
+          decoration: BoxDecoration(
+            color: backgroundColor ?? Colors.blue,
+            shape: BoxShape.circle,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.5),
+                blurRadius: 4.0,
+                spreadRadius: 2.0,
+                offset: const Offset(0, 1),
+              ),
+            ],
+          ),
+          child: Material(
+            color: Colors.transparent,
+            elevation: 1.0,
+            shape: const CircleBorder(),
+            clipBehavior: Clip.hardEdge,
+            child: IconButton(
+              onPressed: onPressed,
+              tooltip: 'Sign in with Twitter',
+              icon: const FaIcon(
+                FontAwesomeIcons.twitter,
+                color: Colors.white,
+                size: 24.0,
+              ),
+              splashColor: Colors.blueAccent,
+              highlightColor: Colors.transparent,
+              iconSize: 24.0,
+            ),
+          ),
+        );
+
       case SocialLoginButtonType.githubLogin:
-        return ElevatedButton.icon(
-          onPressed: onPressed,
-          icon: const FaIcon(
-            FontAwesomeIcons.github,
-            color: Colors.white,
+        return Container(
+          width: width ?? 42.0,
+          height: height ?? 42.0,
+          decoration: BoxDecoration(
+            color: backgroundColor ?? Colors.black,
+            shape: BoxShape.circle,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.5),
+                blurRadius: 4.0,
+                spreadRadius: 2.0,
+                offset: const Offset(0, 1),
+              ),
+            ],
           ),
-          label: Text(
-            text ?? '',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: fontSize ?? 14.0,
+          child: Material(
+            color: Colors.transparent,
+            elevation: 1.0,
+            shape: const CircleBorder(),
+            clipBehavior: Clip.hardEdge,
+            child: IconButton(
+              onPressed: onPressed,
+              tooltip: 'Sign in with GitHub',
+              icon: const FaIcon(
+                FontAwesomeIcons.github,
+                color: Colors.white,
+                size: 24.0,
+              ),
+              splashColor: Colors.grey,
+              highlightColor: Colors.transparent,
+              iconSize: 24.0,
             ),
-          ),
-          style: defaultButtonStyle.copyWith(
-            backgroundColor: MaterialStateProperty.all<Color>(
-              const Color(0xFF24292E),
-            ),
-            minimumSize: MaterialStateProperty.resolveWith(
-                (states) => Size(width ?? 250, height ?? 50)),
           ),
         );
       default:
-        throw Exception('Unsupported button type');
+        return const SizedBox.shrink();
     }
   }
 }

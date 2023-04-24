@@ -1,8 +1,7 @@
-enum ButtonType {
-  elevatedButton,
-  outlinedButton,
-  textButton,
-  iconButton,
-  floatingActionButton,
-  materialButton,
+enum SocialLoginButtonType {
+  googleLogin,
+  facebookLogin,
+  twitterLogin,
+  generalLogin,
+  githubLogin,
 }

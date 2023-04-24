@@ -9,7 +9,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-// import 'config/environment.dart';
+import 'config/environment.dart';
 import 'l10n/l10n.dart';
 import 'pages/auth/sign_in_page.dart';
 import 'pages/auth/sign_up_page.dart';
@@ -26,9 +26,8 @@ Future<void> main() async {
   await dotenv.load(fileName: ".env");
   print(Supabase);
   await Supabase.initialize(
-    url: 'https://xcadcujuokfxgnkkiyhj.supabase.co',
-    anonKey:
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhjYWRjdWp1b2tmeGdua2tpeWhqIiwicm9sZSI6ImFub24iLCJpYXQiOjE2NzY3Nzk4MzUsImV4cCI6MTk5MjM1NTgzNX0.c1kP8pSpInBos-ILI50WcZlmmKtocYTZETOaN0IlM5U',
+    url: Environment.supabaseUrl,
+    anonKey: Environment.supabaseAnonKey,
   );
 
   timeago.setLocaleMessages('ru', timeago.RuMessages());

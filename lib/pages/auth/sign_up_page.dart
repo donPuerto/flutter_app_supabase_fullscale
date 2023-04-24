@@ -2,6 +2,7 @@
 
 import 'dart:async';
 
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -10,15 +11,22 @@ import '../../services/supabase/supabase_auth_service.dart';
 
 import '../../services/supabase/supabase_client_service.dart';
 import '../../utils/box_decorations.dart';
-import '../../utils/custom_password_textfield.dart';
+import '../../widgets/custom_password_textfield_widget.dart';
 
+import '../../utils/types.dart';
 import '../../utils/validators.dart';
 
 import '../../widgets/custom_snackbar.dart';
 import '../../widgets/custom_textfield.dart';
 
+import '../../widgets/divider_with_text_widget.dart';
+import '../../widgets/sized_box_widget.dart';
 import '../../widgets/social_media_button.dart';
+
+import '../../widgets/terms_and_privacy_widget.dart';
 import '../../widgets/wave_header.dart';
+import '../privacy_policy_page.dart';
+import '../terms_of_service_page.dart';
 import 'sign_in_page.dart';
 
 class SignUpPage extends StatefulWidget {
@@ -34,7 +42,7 @@ class _SignUpPageState extends State<SignUpPage> {
   final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
   final _formKey = GlobalKey<FormState>();
-  bool _isLoading = false;
+  late bool _isLoading = false;
   bool _redirecting = false;
   late final _emailController = TextEditingController();
   late final _passwordController = TextEditingController();
@@ -42,6 +50,7 @@ class _SignUpPageState extends State<SignUpPage> {
   late final StreamSubscription<AuthState> _authStateSubscription;
   bool _obscureTextPassword = true;
   bool _obscureTextConfirmPassword = true;
+  late bool _isChecked = false;
 
   @override
   void initState() {
@@ -70,7 +79,7 @@ class _SignUpPageState extends State<SignUpPage> {
     super.dispose();
   }
 
-// Toggles the password show status
+  // Toggles the password show status
   void _togglePassword() {
     setState(() {
       _obscureTextPassword = !_obscureTextPassword;
@@ -80,6 +89,26 @@ class _SignUpPageState extends State<SignUpPage> {
   void _toggleConfirmPassword() {
     setState(() {
       _obscureTextConfirmPassword = !_obscureTextConfirmPassword;
+    });
+  }
+
+  void _onTermsPressed() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const TermsOfServicePage()),
+    );
+  }
+
+  void _onPrivacyPressed() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const PrivacyPolicyPage()),
+    );
+  }
+
+  void _onCheckedChanged(bool? value) {
+    setState(() {
+      _isChecked = value ?? false;
     });
   }
 
@@ -122,7 +151,7 @@ class _SignUpPageState extends State<SignUpPage> {
                             ),
                           ],
                         ),
-                        const SizedBox(height: 30.0),
+                        const SizedBoxWidget(height: 12),
                         Form(
                           key: _formKey,
                           child: Column(
@@ -139,10 +168,10 @@ class _SignUpPageState extends State<SignUpPage> {
                                       AutovalidateMode.onUserInteraction,
                                 ),
                               ),
-                              const SizedBox(height: 15.0),
+                              const SizedBoxWidget(height: 15),
                               Container(
                                 decoration: kRoundedBoxDecoration,
-                                child: CustomPasswordTextField(
+                                child: CustomPasswordTextFieldWidget(
                                   key: const Key('password'),
                                   controller: _passwordController,
                                   labelText: 'Password',
@@ -151,13 +180,14 @@ class _SignUpPageState extends State<SignUpPage> {
                                   validator: validatePassword,
                                   autovalidateMode:
                                       AutovalidateMode.onUserInteraction,
+                                  togglePasswordVisibility: _togglePassword,
                                 ),
                               ),
-                              const SizedBox(height: 15.0),
+                              const SizedBoxWidget(height: 15),
                               Container(
                                 decoration: kRoundedBoxDecoration,
                                 //obscureText: _obscureTextConfirmPassword,
-                                child: CustomPasswordTextField(
+                                child: CustomPasswordTextFieldWidget(
                                   key: const Key('confirmPassword'),
                                   controller: _confirmPasswordController,
                                   labelText: 'Confirm Password',
@@ -167,144 +197,170 @@ class _SignUpPageState extends State<SignUpPage> {
                                       value, _passwordController.text),
                                   autovalidateMode:
                                       AutovalidateMode.onUserInteraction,
+                                  togglePasswordVisibility:
+                                      _toggleConfirmPassword,
                                 ),
                               ),
-                              const SizedBox(height: 30.0),
+                              const SizedBoxWidget(height: 10),
+                              TermsAndPrivacyWidget(
+                                isChecked: _isChecked,
+                                onCheckedChanged: _onCheckedChanged,
+                                onTermsPressed: _onTermsPressed,
+                                onPrivacyPressed: _onPrivacyPressed,
+                              ),
+                              const SizedBoxWidget(height: 18),
                               Container(
                                 decoration: kRoundedBoxDecoration,
                                 child: Builder(builder: (BuildContext context) {
-                                  return ElevatedButton(
-                                    child: const Padding(
-                                      padding: EdgeInsets.all(8.0),
-                                      child: Text(
-                                        'Sign Up',
-                                        style: TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.white),
-                                      ),
-                                    ),
-                                    onPressed: () async {
-                                      print('onPressed');
-                                      setState(() {
-                                        _isLoading = true;
-                                      });
-                                      if (_formKey.currentState!.validate()) {
-                                        String signUpResult =
-                                            await authService.signUp(
-                                                _emailController.text,
-                                                _passwordController.text);
+                                  return SizedBox(
+                                    width: double.infinity,
+                                    child: ElevatedButton(
+                                        style: ElevatedButton.styleFrom(
+                                            backgroundColor: Colors.blue),
+                                        child: const Padding(
+                                          padding: EdgeInsets.all(8.0),
+                                          child: Text(
+                                            'Sign Up',
+                                            style: TextStyle(
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.white),
+                                          ),
+                                        ),
+                                        onPressed: () async {
+                                          print('onPressed');
 
-                                        if (signUpResult ==
-                                            // ignore: duplicate_ignore
-                                            'Sign-up successful') {
-                                          // Navigate to the next screen after successful sign-up
-                                          Navigator.of(context).pushReplacement(
-                                            MaterialPageRoute(
-                                              builder: (BuildContext context) =>
-                                                  const SignInPage(),
-                                            ),
-                                          );
+                                          if (!_isChecked) {
+                                            // Show an error message if the user has not checked the terms and policy checkbox
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(
+                                              CustomSnackbar(
+                                                message:
+                                                    'Please accept the Terms of Service and Privacy Policy',
+                                                type: SnackBarType.Information,
+                                              ),
+                                            );
+                                            return;
+                                          }
+
+                                          setState(() {
+                                            _isLoading = true;
+                                          });
+
+                                          if (_formKey.currentState!
+                                              .validate()) {
+                                            String signUpResult =
+                                                await authService.signUp(
+                                                    _emailController.text,
+                                                    _passwordController.text);
+
+                                            if (signUpResult ==
+                                                // ignore: duplicate_ignore
+                                                'Sign-up successful') {
+                                              // Navigate to the next screen after successful sign-up
+                                              Navigator.of(context)
+                                                  .pushReplacement(
+                                                MaterialPageRoute(
+                                                  builder:
+                                                      (BuildContext context) =>
+                                                          const SignInPage(),
+                                                ),
+                                              );
+                                              setState(() {
+                                                _isLoading = false;
+                                              });
+                                            } else {
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(
+                                                CustomSnackbar(
+                                                  message:
+                                                      'Oops! Something went wrong',
+                                                  type: SnackBarType.Error,
+                                                ),
+                                              );
+                                            }
+                                          }
                                           setState(() {
                                             _isLoading = false;
                                           });
-                                        } else {
-                                          setState(() {
-                                            _isLoading = false;
-                                          });
-                                          // Show error message
-                                          const CustomSnackbar(
-                                            message: 'Something happened',
-                                            type: SnackBarType.Error,
-                                          );
-                                        }
-                                      }
-                                    },
+                                        }),
                                   );
                                 }),
                               ),
-                              const SizedBox(height: 40.0),
+                              const SizedBoxWidget(height: 30),
+                              const DividerWithTextWidget(text: 'OR'),
+                              const SizedBoxWidget(height: 30),
                               Row(
-                                children: const [
-                                  Expanded(
-                                    child: Divider(
-                                      thickness: 1.5,
-                                      color: Colors.grey,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 8.0),
+                                    child: SocialMediaButton(
+                                      buttonType:
+                                          SocialLoginButtonType.googleLogin,
+                                      onPressed: () {},
                                     ),
                                   ),
                                   Padding(
-                                    padding:
-                                        EdgeInsets.symmetric(horizontal: 10),
-                                    child: Text('OR'),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 8.0),
+                                    child: SocialMediaButton(
+                                      buttonType:
+                                          SocialLoginButtonType.facebookLogin,
+                                      onPressed: () {},
+                                    ),
                                   ),
-                                  Expanded(
-                                    child: Divider(
-                                      thickness: 1.5,
-                                      color: Colors.grey,
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 8.0),
+                                    child: SocialMediaButton(
+                                      buttonType:
+                                          SocialLoginButtonType.twitterLogin,
+                                      onPressed: () {},
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 8.0),
+                                    child: SocialMediaButton(
+                                      buttonType:
+                                          SocialLoginButtonType.githubLogin,
+                                      onPressed: () {},
                                     ),
                                   ),
                                 ],
                               ),
-                              const SizedBox(height: 30.0),
-                              Column(
-                                children: [
-                                  SocialMediaButton(
-                                    buttonType:
-                                        SocialLoginButtonType.googleLogin,
-                                    text: 'Sign in with Google',
-                                    onPressed: () {
-                                      // Do something when the user presses the button
-                                    },
+                              const SizedBoxWidget(height: 30),
+                              Container(
+                                margin:
+                                    const EdgeInsets.fromLTRB(10, 20, 10, 20),
+                                //child: Text('Don\'t have an account? Create'),
+                                child: Text.rich(
+                                  TextSpan(
+                                    children: [
+                                      const TextSpan(
+                                          text: "Already have an account? "),
+                                      TextSpan(
+                                        text: 'Sign In',
+                                        recognizer: TapGestureRecognizer()
+                                          ..onTap = () {
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        const SignInPage()));
+                                          },
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .secondary),
+                                      ),
+                                    ],
                                   ),
-                                  const SizedBox(height: 16),
-                                  SocialMediaButton(
-                                    buttonType:
-                                        SocialLoginButtonType.facebookLogin,
-                                    text: 'Sign in with Facebook',
-                                    onPressed: () {
-                                      // Do something when the user presses the button
-                                    },
-                                  ),
-                                  const SizedBox(height: 16),
-                                  SocialMediaButton(
-                                    buttonType:
-                                        SocialLoginButtonType.githubLogin,
-                                    text: 'Sign in with Github',
-                                    onPressed: () {
-                                      // Do something when the user presses the button
-                                    },
-                                  ),
-                                ],
+                                ),
                               ),
-
-                              const SizedBox(height: 30.0),
-                              //     Container(
-                              //       margin:
-                              //           const EdgeInsets.fromLTRB(10, 20, 10, 20),
-                              //       //child: Text('Don\'t have an account? Create'),
-                              //       child: Text.rich(
-                              //         TextSpan(
-                              //           children: [
-                              //             const TextSpan(
-                              //                 text: "Already have an account? "),
-                              //             TextSpan(
-                              //               text: 'Sign in',
-                              //               recognizer: TapGestureRecognizer()
-                              //                 ..onTap = () {
-                              //                   navigatorKey.currentState!
-                              //                       .pushNamed(
-                              //                           SignInPage.routeName);
-                              //                 },
-                              //               style: TextStyle(
-                              //                   fontWeight: FontWeight.bold,
-                              //                   color: Theme.of(context)
-                              //                       .colorScheme
-                              //                       .secondary),
-                              //             ),
-                              //           ],
-                              //         ),
-                              //       ),
-                              //     ),
                             ],
                           ),
                         ),
