@@ -1,51 +1,51 @@
-// ignore_for_file: avoid_print, no_leading_underscores_for_local_identifiers
+// ignore_for_file: avoid_print, no_leading_underscores_for_local_identifiers, unused_field
 
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_app_supabase_fullscale/services/supabase/supabase_client_service.dart';
 
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import '../shared_preferences_service.dart';
-import 'supabase_client_service.dart';
+import '../../widgets/custom_snackbar_widget.dart';
 import 'supabase_user_service.dart';
 
 class SupabaseAuthService extends ChangeNotifier {
-  //late final SupabaseClient _supabaseClient;
+  Stream<AuthChangeEvent>? _authStateChanges;
+  bool _isAuthenticated = false;
 
-  // ignore: unused_field, prefer_typing_uninitialized_variables
-  var _currentUser;
-
-  Future<void> initialize() async {
-    print('Supabase Initialize');
-
-    // await Supabase.initialize(
-    //   url: Environment.supabaseUrl,
-    //   anonKey: Environment.supabaseAnonKey,
-    // );
-
-    // _supabaseClient = await Supabase.initialize(
-    //   Environment.supabaseUrl,
-    //   Environment.supabaseAnonKey,
-    // );
-    SharedPreferences _preferences = await SharedPreferencesService.instance;
-    final storedSession = _preferences.getString('session');
-    if (storedSession != null) {
-      supabaseClient.auth.recoverSession(storedSession);
-    }
-
-    supabaseClient.auth.onAuthStateChange.listen((data) {
-      if (data.session == null) {
-        _currentUser = null;
-        _preferences.remove('session');
-      } else {
-        _currentUser = data.session?.user;
-        final sessionJson = data.session?.toJson();
-        _preferences.setString('session', sessionJson as String);
-      }
-      notifyListeners();
+  authService(supabaseClient) {
+    // Subscribe to Supabase auth state changes
+    _authStateChanges = supabaseClient.auth.onAuthStateChange.listen((data) {
+      final AuthChangeEvent? event = data.event;
+      _isAuthenticated = event != null;
     });
+  }
+
+  bool get isAuthenticated => _isAuthenticated;
+
+  Future<String?> signInWithOAuth(
+    Provider provider,
+    BuildContext context,
+  ) async {
+    try {
+      await supabaseClient.auth.signInWithOAuth(provider);
+    } on AuthException catch (error) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        CustomSnackbarWidget(
+          message: error.message,
+          type: SnackBarType.Error,
+        ),
+      );
+    } catch (error) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        CustomSnackbarWidget(
+          message: 'Unexpected error occurred',
+          type: SnackBarType.Error,
+        ),
+      );
+    }
+    return null;
   }
 
   Future<void> signIn(String _email, String _password) async {
@@ -55,7 +55,7 @@ class SupabaseAuthService extends ChangeNotifier {
         password: _password,
       );
       final User? user = res.user;
-      await SupabaseUserService().currentUser(user);
+      await SupabaseUserService().authResponse(user as AuthResponse);
     } on AuthException catch (error) {
       print(error.message);
     } catch (error) {
@@ -73,7 +73,7 @@ class SupabaseAuthService extends ChangeNotifier {
       );
       print('AuthResponse');
       final User? user = res.user;
-      await SupabaseUserService().currentUser(user);
+      await SupabaseUserService().authResponse(user as AuthResponse);
       // final Session? session = res.session;
       // final User? user = res.user;
       return 'Sign-up successful'; // sign-in success
@@ -90,29 +90,11 @@ class SupabaseAuthService extends ChangeNotifier {
     await supabaseClient.auth.signOut();
   }
 
-  Future<bool> isAuthenticated() async {
-    final session = supabaseClient.auth.currentSession;
-    final now = DateTime.now().toUtc();
-    return session != null &&
-        session.expiresAt != null &&
-        DateTime.fromMillisecondsSinceEpoch(session.expiresAt!).isAfter(now);
-  }
+  @override
+  void dispose() {
+    super.dispose();
+    final authSubscription = supabaseClient.auth.onAuthStateChange;
 
-  User? getCurrentUser() {
-    final session = supabaseClient.auth.currentSession;
-    return session?.user;
-  }
-
-  StreamSubscription<AuthState> onAuthStateChanges(
-    void Function(AuthChangeEvent event) listener,
-  ) {
-    return supabaseClient.auth.onAuthStateChange.listen((data) {
-      final AuthChangeEvent event = data.event;
-      if (event == AuthChangeEvent.signedIn) {
-        listener(AuthChangeEvent.signedIn);
-      } else if (event == AuthChangeEvent.signedOut) {
-        listener(AuthChangeEvent.signedOut);
-      }
-    });
+    authSubscription.cancel();
   }
 }
