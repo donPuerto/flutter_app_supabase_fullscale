@@ -16,7 +16,7 @@ import '../../widgets/custom_password_textfield_widget.dart';
 import '../../utils/types.dart';
 import '../../utils/validators.dart';
 
-import '../../widgets/custom_snackbar.dart';
+import '../../widgets/custom_snackbar_widget.dart';
 import '../../widgets/custom_textfield.dart';
 
 import '../../widgets/divider_with_text_widget.dart';
@@ -26,6 +26,7 @@ import '../../widgets/social_media_button.dart';
 import '../../widgets/terms_and_privacy_widget.dart';
 import '../../widgets/wave_header.dart';
 import '../privacy_policy_page.dart';
+import '../profile_page.dart';
 import '../terms_of_service_page.dart';
 import 'sign_in_page.dart';
 
@@ -234,7 +235,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                             // Show an error message if the user has not checked the terms and policy checkbox
                                             ScaffoldMessenger.of(context)
                                                 .showSnackBar(
-                                              CustomSnackbar(
+                                              CustomSnackbarWidget(
                                                 message:
                                                     'Please accept the Terms of Service and Privacy Policy',
                                                 type: SnackBarType.Information,
@@ -272,7 +273,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                             } else {
                                               ScaffoldMessenger.of(context)
                                                   .showSnackBar(
-                                                CustomSnackbar(
+                                                CustomSnackbarWidget(
                                                   message:
                                                       'Oops! Something went wrong',
                                                   type: SnackBarType.Error,
@@ -299,7 +300,29 @@ class _SignUpPageState extends State<SignUpPage> {
                                     child: SocialMediaButton(
                                       buttonType:
                                           SocialLoginButtonType.googleLogin,
-                                      onPressed: () {},
+                                      onPressed: () {
+                                        Provider provider = Provider.google;
+
+                                        SupabaseAuthService()
+                                            .signInWithOAuth(provider, context)
+                                            .then((value) {
+                                          Navigator.of(context).pushReplacement(
+                                            MaterialPageRoute(
+                                              builder: (BuildContext context) =>
+                                                  const ProfilePage(),
+                                            ),
+                                          );
+                                        }).catchError((error) {
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                            CustomSnackbarWidget(
+                                              message:
+                                                  'Oops! Something went wrong',
+                                              type: SnackBarType.Error,
+                                            ),
+                                          );
+                                        });
+                                      },
                                     ),
                                   ),
                                   Padding(
