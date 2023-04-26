@@ -1,13 +1,41 @@
 import 'package:flutter/material.dart';
+import 'package:pinput/pinput.dart';
 
-import 'otp_page.dart';
-import 'sign_in_page.dart';
+import 'create_password_page.dart';
 
-class ForgotPasswordPage extends StatelessWidget {
-  const ForgotPasswordPage({Key? key}) : super(key: key);
+class OTPPage extends StatelessWidget {
+  const OTPPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    PinTheme defaultTheme = PinTheme(
+      height: 75,
+      width: 75,
+      textStyle: const TextStyle(
+        fontSize: 25,
+      ),
+      decoration: BoxDecoration(
+        color: const Color(0xFFF7F8F9),
+        border: Border.all(
+          color: const Color(0xFFE8ECF4),
+        ),
+        borderRadius: BorderRadius.circular(8),
+      ),
+    );
+    PinTheme focusedTheme = PinTheme(
+      height: 75,
+      width: 75,
+      textStyle: const TextStyle(
+        fontSize: 25,
+      ),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        border: Border.all(
+          color: const Color(0xFF35C2C1),
+        ),
+        borderRadius: BorderRadius.circular(8),
+      ),
+    );
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -29,7 +57,7 @@ class ForgotPasswordPage extends StatelessWidget {
               child: SizedBox(
                 width: MediaQuery.of(context).size.width * 0.8,
                 child: const Text(
-                  "Forgot Password?",
+                  "OTP Verification",
                   style: TextStyle(
                     fontSize: 30,
                     fontWeight: FontWeight.w700,
@@ -43,7 +71,7 @@ class ForgotPasswordPage extends StatelessWidget {
                 vertical: 10,
               ),
               child: Text(
-                "Don't worry! It occurs. Please enter the email address linked with your account.",
+                "Enter the verification code we just sent on your email address.",
                 style: TextStyle(
                   color: Color(0xFF8391A1),
                   fontSize: 16,
@@ -52,35 +80,16 @@ class ForgotPasswordPage extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 20),
-            //email
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 20,
-              ),
-              child: Container(
-                decoration: BoxDecoration(
-                  color: const Color(0xFFF7F8F9),
-                  border: Border.all(
-                    color: const Color(0xFFE8ECF4),
-                  ),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.only(
-                    left: 10,
-                    right: 10,
-                  ),
-                  child: TextFormField(
-                    decoration: const InputDecoration(
-                      border: InputBorder.none,
-                      hintText: 'Enter your email',
-                      hintStyle: TextStyle(
-                        color: Color(0xFF8391A1),
-                      ),
-                    ),
+            Row(
+              children: [
+                Expanded(
+                  child: Pinput(
+                    defaultPinTheme: defaultTheme,
+                    focusedPinTheme: focusedTheme,
+                    submittedPinTheme: focusedTheme,
                   ),
                 ),
-              ),
+              ],
             ),
             const SizedBox(height: 40),
             Padding(
@@ -100,12 +109,13 @@ class ForgotPasswordPage extends StatelessWidget {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => const OTPPage()));
+                                builder: (context) =>
+                                    const CreatePasswordPage()));
                       },
                       child: const Padding(
                         padding: EdgeInsets.all(15.0),
                         child: Text(
-                          "Send Code",
+                          "Verify",
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 16,
@@ -122,21 +132,16 @@ class ForgotPasswordPage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const Text(
-                  "Remember Password? ",
+                  "Didn’t received code? ",
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
                 GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const SignInPage()));
-                  },
+                  onTap: () {},
                   child: const Text(
-                    "Login",
+                    "Resend",
                     style: TextStyle(
                       color: Color(0xFF35C2C1),
                       fontSize: 16,

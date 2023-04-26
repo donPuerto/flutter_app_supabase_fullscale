@@ -15,7 +15,7 @@ import 'pages/auth/sign_in_page.dart';
 import 'pages/auth/sign_up_page.dart';
 import 'pages/profile_page.dart';
 import 'pages/splash_page.dart';
-import 'services/supabase/supabase_auth_service.dart';
+import 'services/supabase/auth_service.dart';
 import 'utils/constants.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
@@ -35,8 +35,8 @@ Future<void> main() async {
 
   runApp(
     MultiProvider(providers: [
-      ChangeNotifierProvider<SupabaseAuthService>(
-        create: (_) => SupabaseAuthService(),
+      ChangeNotifierProvider<AuthService>(
+        create: (_) => AuthService(),
         lazy: false,
       ),
     ], child: const MyApp()),

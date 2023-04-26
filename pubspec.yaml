@@ -51,6 +51,7 @@ dependencies:
   tuple: ^2.0.1
   wave: ^0.2.2
   webview_flutter: ^4.2.0
+  pinput: ^2.2.31
 
 dev_dependencies:
   flutter_test:

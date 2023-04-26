@@ -3,14 +3,13 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_app_supabase_fullscale/services/supabase/supabase_client_service.dart';
+import 'package:flutter_app_supabase_fullscale/services/supabase/client_service.dart';
 
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../widgets/custom_snackbar_widget.dart';
-import 'supabase_user_service.dart';
 
-class SupabaseAuthService extends ChangeNotifier {
+class AuthService extends ChangeNotifier {
   Stream<AuthChangeEvent>? _authStateChanges;
   bool _isAuthenticated = false;
 
@@ -48,53 +47,61 @@ class SupabaseAuthService extends ChangeNotifier {
     return null;
   }
 
-  Future<void> signIn(String _email, String _password) async {
+  Future<void> signIn(
+    String _email,
+    String _password,
+    BuildContext context,
+  ) async {
     try {
-      final AuthResponse res = await supabaseClient.auth.signInWithPassword(
+      await supabaseClient.auth.signInWithPassword(
         email: _email,
         password: _password,
       );
-      final User? user = res.user;
-      await SupabaseUserService().authResponse(user as AuthResponse);
     } on AuthException catch (error) {
-      print(error.message);
+      ScaffoldMessenger.of(context).showSnackBar(
+        CustomSnackbarWidget(
+          message: error.message,
+          type: SnackBarType.Error,
+        ),
+      );
     } catch (error) {
-      print('Unexpected error occurred');
+      ScaffoldMessenger.of(context).showSnackBar(
+        CustomSnackbarWidget(
+          message: 'Unexpected error occurred',
+          type: SnackBarType.Error,
+        ),
+      );
     }
   }
 
-  Future<String> signUp(String _email, String _password) async {
-    print(supabaseClient);
-    print('signUp $_email $_password');
+  Future<void> signUp(
+    String _email,
+    String _password,
+    BuildContext context,
+  ) async {
     try {
-      final AuthResponse res = await supabaseClient.auth.signUp(
+      await supabaseClient.auth.signUp(
         email: _email,
         password: _password,
       );
-      print('AuthResponse');
-      final User? user = res.user;
-      await SupabaseUserService().authResponse(user as AuthResponse);
-      // final Session? session = res.session;
-      // final User? user = res.user;
-      return 'Sign-up successful'; // sign-in success
     } on AuthException catch (error) {
-      print('AuthException');
-      return error.message;
+      ScaffoldMessenger.of(context).showSnackBar(
+        CustomSnackbarWidget(
+          message: error.message,
+          type: SnackBarType.Error,
+        ),
+      );
     } catch (error) {
-      print('Unexpected error occurred');
-      return 'Unexpected error occurred';
+      ScaffoldMessenger.of(context).showSnackBar(
+        CustomSnackbarWidget(
+          message: 'Unexpected error occurred',
+          type: SnackBarType.Error,
+        ),
+      );
     }
   }
 
   Future<void> signOut() async {
     await supabaseClient.auth.signOut();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    final authSubscription = supabaseClient.auth.onAuthStateChange;
-
-    authSubscription.cancel();
   }
 }

@@ -7,25 +7,26 @@ import 'package:flutter/material.dart';
 
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import '../../services/supabase/supabase_auth_service.dart';
+import '../../services/supabase/auth_service.dart';
 
-import '../../services/supabase/supabase_client_service.dart';
+import '../../services/supabase/client_service.dart';
 import '../../utils/box_decorations.dart';
 import '../../widgets/custom_password_textfield_widget.dart';
 
-import '../../utils/types.dart';
 import '../../utils/validators.dart';
 
 import '../../widgets/custom_snackbar_widget.dart';
 import '../../widgets/custom_textfield.dart';
 
 import '../../widgets/divider_with_text_widget.dart';
+import '../../widgets/oauth_button_widget.dart';
 import '../../widgets/sized_box_widget.dart';
-import '../../widgets/social_media_button.dart';
 
 import '../../widgets/terms_and_privacy_widget.dart';
+import '../../widgets/text_link_navigation.dart';
 import '../../widgets/wave_header.dart';
 import '../privacy_policy_page.dart';
+
 import '../profile_page.dart';
 import '../terms_of_service_page.dart';
 import 'sign_in_page.dart';
@@ -115,7 +116,7 @@ class _SignUpPageState extends State<SignUpPage> {
 
   @override
   Widget build(BuildContext context) {
-    final authService = SupabaseAuthService();
+    final authService = AuthService();
 
     return Scaffold(
       key: _scaffoldKey,
@@ -229,8 +230,6 @@ class _SignUpPageState extends State<SignUpPage> {
                                           ),
                                         ),
                                         onPressed: () async {
-                                          print('onPressed');
-
                                           if (!_isChecked) {
                                             // Show an error message if the user has not checked the terms and policy checkbox
                                             ScaffoldMessenger.of(context)
@@ -243,43 +242,27 @@ class _SignUpPageState extends State<SignUpPage> {
                                             );
                                             return;
                                           }
-
                                           setState(() {
                                             _isLoading = true;
                                           });
 
                                           if (_formKey.currentState!
                                               .validate()) {
-                                            String signUpResult =
-                                                await authService.signUp(
-                                                    _emailController.text,
-                                                    _passwordController.text);
+                                            await authService.signUp(
+                                              _emailController.text,
+                                              _passwordController.text,
+                                              context,
+                                            );
 
-                                            if (signUpResult ==
-                                                // ignore: duplicate_ignore
-                                                'Sign-up successful') {
-                                              // Navigate to the next screen after successful sign-up
-                                              Navigator.of(context)
-                                                  .pushReplacement(
-                                                MaterialPageRoute(
-                                                  builder:
-                                                      (BuildContext context) =>
-                                                          const SignInPage(),
-                                                ),
-                                              );
-                                              setState(() {
-                                                _isLoading = false;
-                                              });
-                                            } else {
-                                              ScaffoldMessenger.of(context)
-                                                  .showSnackBar(
-                                                CustomSnackbarWidget(
-                                                  message:
-                                                      'Oops! Something went wrong',
-                                                  type: SnackBarType.Error,
-                                                ),
-                                              );
-                                            }
+                                            // Navigate to the next screen after successful sign-up
+                                            Navigator.of(context)
+                                                .pushReplacement(
+                                              MaterialPageRoute(
+                                                builder:
+                                                    (BuildContext context) =>
+                                                        const SignInPage(),
+                                              ),
+                                            );
                                           }
                                           setState(() {
                                             _isLoading = false;
@@ -293,97 +276,52 @@ class _SignUpPageState extends State<SignUpPage> {
                               const SizedBoxWidget(height: 30),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
+                                children: const [
                                   Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 8.0),
-                                    child: SocialMediaButton(
-                                      buttonType:
-                                          SocialLoginButtonType.googleLogin,
-                                      onPressed: () {
-                                        Provider provider = Provider.google;
-
-                                        SupabaseAuthService()
-                                            .signInWithOAuth(provider, context)
-                                            .then((value) {
-                                          Navigator.of(context).pushReplacement(
-                                            MaterialPageRoute(
-                                              builder: (BuildContext context) =>
-                                                  const ProfilePage(),
-                                            ),
-                                          );
-                                        }).catchError((error) {
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(
-                                            CustomSnackbarWidget(
-                                              message:
-                                                  'Oops! Something went wrong',
-                                              type: SnackBarType.Error,
-                                            ),
-                                          );
-                                        });
-                                      },
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 8.0),
+                                    child: OAuthButtonWidget(
+                                      provider: Provider.google,
+                                      page: ProfilePage(),
                                     ),
                                   ),
                                   Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 8.0),
-                                    child: SocialMediaButton(
-                                      buttonType:
-                                          SocialLoginButtonType.facebookLogin,
-                                      onPressed: () {},
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 8.0),
+                                    child: OAuthButtonWidget(
+                                      provider: Provider.facebook,
+                                      page: ProfilePage(),
                                     ),
                                   ),
                                   Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 8.0),
-                                    child: SocialMediaButton(
-                                      buttonType:
-                                          SocialLoginButtonType.twitterLogin,
-                                      onPressed: () {},
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 8.0),
+                                    child: OAuthButtonWidget(
+                                      provider: Provider.twitter,
+                                      page: ProfilePage(),
                                     ),
                                   ),
                                   Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 8.0),
-                                    child: SocialMediaButton(
-                                      buttonType:
-                                          SocialLoginButtonType.githubLogin,
-                                      onPressed: () {},
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 8.0),
+                                    child: OAuthButtonWidget(
+                                      provider: Provider.github,
+                                      page: ProfilePage(),
                                     ),
                                   ),
                                 ],
                               ),
                               const SizedBoxWidget(height: 30),
                               Container(
-                                margin:
-                                    const EdgeInsets.fromLTRB(10, 20, 10, 20),
-                                //child: Text('Don\'t have an account? Create'),
-                                child: Text.rich(
-                                  TextSpan(
-                                    children: [
-                                      const TextSpan(
-                                          text: "Already have an account? "),
-                                      TextSpan(
-                                        text: 'Sign In',
-                                        recognizer: TapGestureRecognizer()
-                                          ..onTap = () {
-                                            Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        const SignInPage()));
-                                          },
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .secondary),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
+                                  margin:
+                                      const EdgeInsets.fromLTRB(10, 10, 10, 10),
+                                  //child: Text('Don\'t have an account? Create'),
+                                  child: const TextLinkNavigation(
+                                    page: SignInPage(),
+                                    text1: 'Already have an account? ',
+                                    text2: 'Sign In',
+                                    alignment: Alignment.centerRight,
+                                  )),
                             ],
                           ),
                         ),

@@ -1,5 +1,5 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'supabase_client_service.dart';
+import 'client_service.dart';
 
 class SupabaseUserService {
   //final supabaseClient = Supabase.instance.client;

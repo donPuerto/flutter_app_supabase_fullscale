@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app_supabase_fullscale/widgets/wave_header.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import '../../services/supabase/supabase_client_service.dart';
+import '../../services/supabase/client_service.dart';
 import '../common/theme_helper.dart';
 
 import 'forgot_password_page.dart';
