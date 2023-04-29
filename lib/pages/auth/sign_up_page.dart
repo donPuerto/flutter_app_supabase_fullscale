@@ -119,8 +119,8 @@ class _SignUpPageState extends State<SignUpPage> {
     final authService = AuthService();
 
     return Scaffold(
-      key: _scaffoldKey,
       backgroundColor: Colors.white,
+      key: _scaffoldKey,
       body: Stack(
         children: [
           SingleChildScrollView(
@@ -312,16 +312,13 @@ class _SignUpPageState extends State<SignUpPage> {
                                 ],
                               ),
                               const SizedBoxWidget(height: 30),
-                              Container(
-                                  margin:
-                                      const EdgeInsets.fromLTRB(10, 10, 10, 10),
-                                  //child: Text('Don\'t have an account? Create'),
-                                  child: const TextLinkNavigation(
-                                    page: SignInPage(),
-                                    text1: 'Already have an account? ',
-                                    text2: 'Sign In',
-                                    alignment: Alignment.centerRight,
-                                  )),
+                              const TextLinkNavigation(
+                                page: SignInPage(),
+                                text1: 'Already have an account? ',
+                                text2: 'Sign In',
+                                alignment: Alignment.center,
+                              ),
+                              const SizedBoxWidget(height: 30),
                             ],
                           ),
                         ),

@@ -59,7 +59,6 @@ class TextLinkNavigation extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       alignment: alignment,
-      margin: const EdgeInsets.fromLTRB(10, 20, 10, 20),
       child: Text.rich(
         TextSpan(
           children: [
