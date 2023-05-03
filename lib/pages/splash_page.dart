@@ -10,7 +10,7 @@ import 'auth/sign_up_page.dart';
 // import 'main_page.dart';
 
 class SplashPage extends StatefulWidget {
-  static String routeName = '/';
+  static const String routeName = '/';
   const SplashPage({Key? key}) : super(key: key);
 
   @override

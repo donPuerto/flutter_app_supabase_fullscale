@@ -1,11 +1,11 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'client_service.dart';
 
-class SupabaseUserService {
+class UserService {
   //final supabaseClient = Supabase.instance.client;
 
   Future<User?> getCurrentUser() async {
-    final currentUser = supabaseClient.auth.currentUser;
+    final currentUser = client.auth.currentUser;
     return currentUser;
   }
 
@@ -15,12 +15,22 @@ class SupabaseUserService {
   }
 
   Future<Session?> getCurrentSession() async {
-    final currentSession = supabaseClient.auth.currentSession;
+    final currentSession = client.auth.currentSession;
     return currentSession;
   }
 
   Future<bool> isAuthenticated() async {
-    final currentUser = supabaseClient.auth.currentUser;
+    final currentUser = client.auth.currentUser;
     return currentUser != null;
+  }
+
+  Future<bool> isLoggedIn() async {
+    return client.auth.currentSession != null;
+  }
+
+  Future<String?> getCurrentUserId() async {
+    final user = await getCurrentUser();
+    final currentUserId = user?.id;
+    return currentUserId;
   }
 }

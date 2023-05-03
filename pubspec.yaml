@@ -52,6 +52,9 @@ dependencies:
   wave: ^0.2.2
   webview_flutter: ^4.2.0
   pinput: ^2.2.31
+  transparent_image: ^2.0.1
+  cached_network_image: ^3.2.3
+  flutter_inset_box_shadow: ^1.0.8
 
 dev_dependencies:
   flutter_test:

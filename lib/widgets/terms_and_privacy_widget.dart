@@ -14,41 +14,50 @@ class TermsAndPrivacyWidget extends StatelessWidget {
   final bool isChecked;
   final ValueChanged<bool?> onCheckedChanged;
 
+  static const TextStyle _textStyle = TextStyle(
+    height: 1.9,
+  );
+
+  static final TextStyle _linkTextStyle = const TextStyle(
+    decoration: TextDecoration.underline,
+    color: Colors.blue,
+  ).merge(_textStyle);
+
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(0.0),
-      child: Center(
+      child: Align(
+        alignment: Alignment.centerLeft,
         child: Wrap(
-          alignment: WrapAlignment.start,
           children: [
             Checkbox(
               value: isChecked,
               onChanged: onCheckedChanged,
             ),
             const SizedBox(
-                width:
-                    8), // added a SizedBox to add some space between the checkbox and text
-            const Text('By signing up you accept the '),
+              width: 8,
+            ), // added a SizedBox to add some space between the checkbox and text
+            const Text(
+              'By signing up you accept the ',
+              style: _textStyle,
+            ),
             GestureDetector(
               onTap: onTermsPressed,
-              child: const Text(
+              child: Text(
                 'Terms of service',
-                style: TextStyle(
-                  decoration: TextDecoration.underline,
-                  color: Colors.blue,
-                ),
+                style: _linkTextStyle,
               ),
             ),
-            const Text(' and '),
+            const Text(
+              ' and ',
+              style: _textStyle,
+            ),
             GestureDetector(
               onTap: onPrivacyPressed,
-              child: const Text(
+              child: Text(
                 'Privacy Policy',
-                style: TextStyle(
-                  decoration: TextDecoration.underline,
-                  color: Colors.blue,
-                ),
+                style: _linkTextStyle,
               ),
             ),
           ],

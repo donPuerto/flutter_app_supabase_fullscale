@@ -1,13 +1,12 @@
 // ignore_for_file: unused_local_variable, avoid_print, use_build_context_synchronously
 
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_app_supabase_fullscale/widgets/wave_header.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../services/supabase/auth_service.dart';
 import '../../services/supabase/client_service.dart';
+import '../../services/supabase/user_service.dart';
 import '../../utils/box_decorations.dart';
 import '../../utils/validators.dart';
 import '../../widgets/custom_password_textfield_widget.dart';
@@ -17,13 +16,14 @@ import '../../widgets/oauth_button_widget.dart';
 import '../../widgets/sized_box_widget.dart';
 import '../../widgets/text_link_navigation.dart';
 
-import '../profile_page.dart';
+import '../profile/profile_page.dart';
+
 import 'forgot_password_page.dart';
 import 'sign_up_page.dart';
 //import 'package:sizer/sizer.dart';
 
 class SignInPage extends StatefulWidget {
-  static String routeName = '/sign_in';
+  static const String routeName = '/sign_in';
   const SignInPage({Key? key}) : super(key: key);
 
   @override
@@ -31,34 +31,24 @@ class SignInPage extends StatefulWidget {
 }
 
 class _SignInPageState extends State<SignInPage> {
-  final _formKey = GlobalKey<FormState>();
   bool _isLoading = false;
-  bool _redirecting = false;
   bool _obscureTextPassword = true;
   bool _rememberMe = false;
   late final _emailController = TextEditingController();
   late final _passwordController = TextEditingController();
-  late final StreamSubscription<AuthState> _authStateSubscription;
+  final _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
-    _authStateSubscription =
-        supabaseClient.auth.onAuthStateChange.listen((data) {
-      if (_redirecting) return;
-      final session = data.session;
-      if (session != null) {
-        _redirecting = true;
-        Navigator.of(context).pushReplacementNamed('/profile');
-      }
-    });
     super.initState();
+    AuthService(client);
   }
 
   @override
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
-    _authStateSubscription.cancel();
+
     super.dispose();
   }
 
@@ -71,7 +61,9 @@ class _SignInPageState extends State<SignInPage> {
 
   @override
   Widget build(BuildContext context) {
-    final authService = AuthService();
+    final authService = AuthService(client);
+    final currentUserId = UserService().getCurrentUserId();
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: Stack(
@@ -183,49 +175,58 @@ class _SignInPageState extends State<SignInPage> {
                               ),
                               const SizedBox(height: 15.0),
                               Wrap(
+                                runSpacing: 10.0,
                                 children: [
-                                  Align(
-                                    alignment: Alignment.centerLeft,
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Material(
-                                          borderRadius: BorderRadius.zero,
-                                          child: Checkbox(
-                                            value: _rememberMe,
-                                            onChanged: (value) {
-                                              setState(() {
-                                                _rememberMe = value ?? false;
-                                              });
-                                            },
-                                          ),
-                                        ),
-                                        const SizedBox(width: 6.0),
-                                        const Text(
-                                          "Remember Me",
-                                          style: TextStyle(
-                                            color: Colors.grey,
-                                            fontWeight: FontWeight.w600,
-                                            fontSize: 14.0,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  Align(
-                                    alignment: Alignment.centerRight,
-                                    child: TextButton(
-                                      onPressed: () {},
-                                      child: const Text(
-                                        "Forgot Password?",
-                                        style: TextStyle(
-                                          color: Colors.blue,
-                                          fontWeight: FontWeight.w600,
-                                          fontSize: 14.0,
-                                          decoration: TextDecoration.underline,
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Align(
+                                        alignment: Alignment.centerLeft,
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Checkbox(
+                                              value: _rememberMe,
+                                              onChanged: (value) {
+                                                setState(() {
+                                                  _rememberMe = value ?? false;
+                                                });
+                                              },
+                                            ),
+                                            const SizedBox(width: 6.0),
+                                            const Text(
+                                              "Remember Me",
+                                              style: TextStyle(
+                                                color: Colors.grey,
+                                                fontWeight: FontWeight.w600,
+                                                fontSize: 14.0,
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                       ),
-                                    ),
+                                      GestureDetector(
+                                        onTap: () {
+                                          Navigator.of(context).pushReplacement(
+                                            MaterialPageRoute(
+                                              builder: (BuildContext context) =>
+                                                  const ForgotPasswordPage(),
+                                            ),
+                                          );
+                                        },
+                                        child: const Text(
+                                          "Forgot Password?",
+                                          style: TextStyle(
+                                            color: Colors.blue,
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 14.0,
+                                            decoration:
+                                                TextDecoration.underline,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ],
                               ),
@@ -255,20 +256,10 @@ class _SignInPageState extends State<SignInPage> {
 
                                           if (_formKey.currentState!
                                               .validate()) {
-                                            await authService.signUp(
+                                            await authService.signIn(
                                               _emailController.text,
                                               _passwordController.text,
                                               context,
-                                            );
-
-                                            // Navigate to the next screen after successful sign-up
-                                            Navigator.of(context)
-                                                .pushReplacement(
-                                              MaterialPageRoute(
-                                                builder:
-                                                    (BuildContext context) =>
-                                                        const SignInPage(),
-                                              ),
                                             );
                                           }
                                           setState(() {
@@ -277,28 +268,6 @@ class _SignInPageState extends State<SignInPage> {
                                         }),
                                   );
                                 }),
-                              ),
-                              const SizedBoxWidget(height: 30),
-                              Container(
-                                margin:
-                                    const EdgeInsets.fromLTRB(10, 0, 10, 20),
-                                alignment: Alignment.topRight,
-                                child: GestureDetector(
-                                  onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              const ForgotPasswordPage()),
-                                    );
-                                  },
-                                  child: const Text(
-                                    "Forgot your password?",
-                                    style: TextStyle(
-                                      color: Colors.grey,
-                                    ),
-                                  ),
-                                ),
                               ),
                               const SizedBoxWidget(height: 30),
                               const TextLinkNavigation(

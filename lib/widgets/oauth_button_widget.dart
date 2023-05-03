@@ -13,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../services/supabase/auth_service.dart';
+import '../services/supabase/client_service.dart';
 import '../utils/types.dart';
 import 'custom_snackbar_widget.dart';
 import 'social_media_button.dart';
@@ -33,7 +34,7 @@ class OAuthButtonWidget extends StatelessWidget {
       buttonType: _getButtonType(),
       onPressed: () async {
         try {
-          await AuthService().signInWithOAuth(
+          await AuthService(client).signInWithOAuth(
             provider,
             context,
           );

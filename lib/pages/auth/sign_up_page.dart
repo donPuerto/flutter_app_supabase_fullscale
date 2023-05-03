@@ -2,7 +2,6 @@
 
 import 'dart:async';
 
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -18,8 +17,6 @@ import '../../utils/validators.dart';
 import '../../widgets/custom_snackbar_widget.dart';
 import '../../widgets/custom_textfield.dart';
 
-import '../../widgets/divider_with_text_widget.dart';
-import '../../widgets/oauth_button_widget.dart';
 import '../../widgets/sized_box_widget.dart';
 
 import '../../widgets/terms_and_privacy_widget.dart';
@@ -27,12 +24,11 @@ import '../../widgets/text_link_navigation.dart';
 import '../../widgets/wave_header.dart';
 import '../privacy_policy_page.dart';
 
-import '../profile_page.dart';
 import '../terms_of_service_page.dart';
 import 'sign_in_page.dart';
 
 class SignUpPage extends StatefulWidget {
-  static String routeName = '/sign_up';
+  static const String routeName = '/sign_up';
   const SignUpPage({Key? key}) : super(key: key);
 
   @override
@@ -58,8 +54,7 @@ class _SignUpPageState extends State<SignUpPage> {
   void initState() {
     super.initState();
     print('initState');
-    _authStateSubscription =
-        supabaseClient.auth.onAuthStateChange.listen((data) {
+    _authStateSubscription = client.auth.onAuthStateChange.listen((data) {
       if (_redirecting) return;
       print('_redirecting is false');
       final session = data.session;
@@ -116,7 +111,7 @@ class _SignUpPageState extends State<SignUpPage> {
 
   @override
   Widget build(BuildContext context) {
-    final authService = AuthService();
+    final authService = AuthService(client);
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -132,7 +127,6 @@ class _SignUpPageState extends State<SignUpPage> {
                 SafeArea(
                   child: Container(
                     padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
-                    margin: const EdgeInsets.fromLTRB(20, 10, 20, 10),
                     child: Column(
                       children: [
                         Row(
@@ -270,46 +264,6 @@ class _SignUpPageState extends State<SignUpPage> {
                                         }),
                                   );
                                 }),
-                              ),
-                              const SizedBoxWidget(height: 30),
-                              const DividerWithTextWidget(text: 'OR'),
-                              const SizedBoxWidget(height: 30),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: const [
-                                  Padding(
-                                    padding:
-                                        EdgeInsets.symmetric(horizontal: 8.0),
-                                    child: OAuthButtonWidget(
-                                      provider: Provider.google,
-                                      page: ProfilePage(),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding:
-                                        EdgeInsets.symmetric(horizontal: 8.0),
-                                    child: OAuthButtonWidget(
-                                      provider: Provider.facebook,
-                                      page: ProfilePage(),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding:
-                                        EdgeInsets.symmetric(horizontal: 8.0),
-                                    child: OAuthButtonWidget(
-                                      provider: Provider.twitter,
-                                      page: ProfilePage(),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding:
-                                        EdgeInsets.symmetric(horizontal: 8.0),
-                                    child: OAuthButtonWidget(
-                                      provider: Provider.github,
-                                      page: ProfilePage(),
-                                    ),
-                                  ),
-                                ],
                               ),
                               const SizedBoxWidget(height: 30),
                               const TextLinkNavigation(
