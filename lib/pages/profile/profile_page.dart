@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 
+import '../../config/size_config.dart';
 import '../../models/user_profile_model.dart';
 import '../../services/supabase/user_service.dart';
 import '../../api/profile_api.dart';
@@ -98,6 +99,8 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
+    SizeConfig.init(context);
+
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -132,15 +135,57 @@ class _ProfilePageState extends State<ProfilePage> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          Avatar(
-                            avatarRadius: 80.0,
+                          ClipPath(
+                            clipper: CustomShape(),
+                            child: Stack(
+                              children: [
+                                Container(
+                                  height: SizeConfig.defaultSize * 15, //150
+                                  decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                      colors: const [
+                                        Colors.red,
+                                        Colors.blue
+                                      ], // Specify the desired colors
+                                      begin: Alignment
+                                          .topLeft, // Define the starting point of the gradient
+                                      end: Alignment
+                                          .bottomRight, // Define the ending point of the gradient
+                                      // You can also specify additional options such as stops and tileMode
+                                    ),
+                                  ),
+                                  child: Positioned.fill(
+                                    top: SizeConfig.defaultSize *
+                                        7.5, // Adjust the position as needed
+                                    child: Align(
+                                      alignment: Alignment.center,
+                                      child: AvatarWidget(
+                                        avatarCircleRadius: 120.0,
+                                        avatarSquareSize: 180,
+                                        imageUrl:
+                                            'https://img.freepik.com/premium-psd/3d-avatar-orange-shirt-woman-with-hat-character-png-transparent_206410-291.jpg',
+                                        avatarType: AvatarType.SQUARE,
+                                        backgroundColor: Colors.amber,
+                                        borderElevation: 10,
+                                        borderColor: Colors.grey,
+                                        borderThickness: 10,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          AvatarWidget(
+                            avatarCircleRadius: 120.0,
+                            avatarSquareSize: 180,
                             imageUrl:
-                                'https://png.pngtree.com/png-clipart/20190520/original/pngtree-vector-users-icon-png-image_4144740.jpg',
-                            avatarType: AvatarType.CIRCLE,
-                            backgroundColor: Colors.green,
-                            borderElevation: 2,
+                                'https://img.freepik.com/premium-psd/3d-avatar-orange-shirt-woman-with-hat-character-png-transparent_206410-291.jpg',
+                            avatarType: AvatarType.SQUARE,
+                            backgroundColor: Colors.amber,
+                            borderElevation: 10,
                             borderColor: Colors.grey,
-                            borderThickness: 8,
+                            borderThickness: 10,
                           ),
                           const SizedBox(height: 20),
                           TextFormField(
@@ -275,5 +320,24 @@ class _ProfilePageState extends State<ProfilePage> {
         ),
       ),
     );
+  }
+}
+
+class CustomShape extends CustomClipper<Path> {
+  @override
+  Path getClip(Size size) {
+    var path = Path();
+    double height = size.height;
+    double width = size.width;
+    path.lineTo(0, height - 100);
+    path.quadraticBezierTo(width / 2, height, width, height - 100);
+    path.lineTo(width, 0);
+    path.close();
+    return path;
+  }
+
+  @override
+  bool shouldReclip(CustomClipper<Path> oldClipper) {
+    return true;
   }
 }
